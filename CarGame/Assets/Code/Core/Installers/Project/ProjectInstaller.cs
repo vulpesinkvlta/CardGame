@@ -1,3 +1,7 @@
+using Core.Application;
+using Core.Domain;
+using Core.Domain.Factory;
+using Core.Infrastructure;
 using Core.Platform;
 using Core.Presentation;
 using System;
@@ -11,6 +15,39 @@ public class ProjectInstaller : MonoInstaller
     {
         BindPlatformServices();
         BindCurtain();
+        BindCardServices();
+        BindDeckServices();
+        BindEconomyServices();
+    }
+
+    private void BindEconomyServices()
+    {
+        Container.Bind<ICardSellPriceCalculator>()
+            .To<CardSellCalculator>()
+            .AsSingle();
+
+        Container.Bind<ICardSellService>()
+            .To<CardSellService>()
+            .AsSingle();
+    }
+
+    private void BindDeckServices()
+    {
+        Container.Bind<IDeckValidator>()
+            .To<DeckValidator>()
+            .AsSingle();
+
+        Container.Bind<IDeckPowerCalculator>()
+            .To<DeckPowerCalculator>()
+            .AsSingle();
+    }
+
+    private void BindCardServices()
+    {
+        Container.Bind<ICardFactory>().To<CardFactory>().AsSingle();
+        Container.Bind<ICardCatalog>()
+            .To<TestCardCatalog>()
+            .AsSingle();
     }
 
     private void BindCurtain()
