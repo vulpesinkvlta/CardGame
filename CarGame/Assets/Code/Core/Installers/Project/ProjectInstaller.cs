@@ -18,6 +18,41 @@ public class ProjectInstaller : MonoInstaller
         BindCardServices();
         BindDeckServices();
         BindEconomyServices();
+        BindPackServices();
+        BindSharedServices();
+        BindPlayerStateServices();
+    }
+
+    private void BindPlayerStateServices()
+    {
+        Container.Bind<PlayerStateFactory>()
+            .AsSingle();
+
+        Container.Bind<IPlayerStateRepository>()
+            .To<RuntimePlayerStateRepository>()
+            .AsSingle();
+
+        Container.Bind<IPlayerStateService>()
+            .To<PlayerStateService>()
+            .AsSingle();
+    }
+
+    private void BindSharedServices()
+    {
+        Container.Bind<IRandomService>()
+            .To<SystemRandomService>()
+            .AsSingle();
+    }
+
+    private void BindPackServices()
+    {
+        Container.Bind<IPackCatalog>()
+            .To<TestPackCatalog>()
+            .AsSingle();
+
+        Container.Bind<IPackOpeningService>()
+            .To<PackOpeningService>()
+            .AsSingle();
     }
 
     private void BindEconomyServices()
