@@ -7,41 +7,64 @@ namespace Core.Presentation
     public class ScreenService : IScreenService
     {
         private readonly Dictionary<Type, IScreen> _screens = new();
-        
+
         public void Register(IScreen screen)
         {
-            Type type = screen.GetType();
-            if (_screens.ContainsKey(type))
+            if (screen == null)
             {
-                Debug.LogWarning($"Screen of type {type.Name} is already registered.");
+                Debug.LogError("[ScreenService] Cannot register null screen.");
                 return;
             }
 
-            _screens.Add(type, screen); 
+            Type type = screen.GetType();
+
+            if (_screens.ContainsKey(type))
+            {
+                Debug.LogWarning($"[ScreenService] Screen already registered: {type.Name}");
+                return;
+            }
+
+            _screens.Add(type, screen);
         }
 
         public void Show<TScreen>() where TScreen : IScreen
         {
-            if(_screens.TryGetValue(typeof(TScreen), out IScreen screen))
+            Type type = typeof(TScreen);
+
+            if (_screens.TryGetValue(type, out IScreen screen))
             {
                 screen.Show();
+                return;
             }
-            else
-            {
-                Debug.LogWarning($"Screen of type {typeof(TScreen).Name} is not found.");
-            }
+
+            Debug.LogError($"[ScreenService] Screen not found: {type.Name}");
         }
 
         public void Hide<TScreen>() where TScreen : IScreen
         {
-            if(_screens.TryGetValue(typeof(TScreen), out IScreen screen))
+            Type type = typeof(TScreen);
+
+            if (_screens.TryGetValue(type, out IScreen screen))
+            {
+                screen.Hide();
+                return;
+            }
+
+            Debug.LogError($"[ScreenService] Screen not found: {type.Name}");
+        }
+
+        public void HideAll()
+        {
+            foreach (IScreen screen in _screens.Values)
             {
                 screen.Hide();
             }
-            else
-            {
-                Debug.LogWarning($"Screen of type {typeof(TScreen).Name} is not found.");
-            }
+        }
+
+        public void ShowOnly<TScreen>() where TScreen : IScreen
+        {
+            HideAll();
+            Show<TScreen>();
         }
     }
 }

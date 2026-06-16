@@ -21,6 +21,30 @@ public class ProjectInstaller : MonoInstaller
         BindPackServices();
         BindSharedServices();
         BindPlayerStateServices();
+        BindUseCases();
+    }
+
+    private void BindUseCases()
+    {
+        Container.Bind<IOpenPackUseCase>()
+            .To<OpenPackUseCase>()
+            .AsSingle();
+
+        Container.Bind<ISellCardUseCase>()
+            .To<SellCardUseCase>()
+            .AsSingle();
+
+        Container.Bind<ICreateDeckUseCase>()
+            .To<CreateDeckUseCase>()
+            .AsSingle();
+
+        Container.Bind<IAddCardToDeckUseCase>()
+            .To<AddCardToDeckUseCase>()
+            .AsSingle();
+
+        Container.Bind<IRemoveCardFromDeckUseCase>()
+            .To<RemoveCardFromDeckUseCase>()
+            .AsSingle();
     }
 
     private void BindPlayerStateServices()
